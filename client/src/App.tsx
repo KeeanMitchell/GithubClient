@@ -182,7 +182,6 @@ function App() {
 
   return (
     <div>
-      <h1>Div Count: {count}</h1>
       {count === 0 && 
         <div>
           <h1>Who is the owner of the repo?</h1>
