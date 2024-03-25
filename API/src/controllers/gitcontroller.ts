@@ -3,11 +3,7 @@ import * as path from 'path';
 import { GitHubRepo } from '../services/gitservice';
 import { Commit } from '../models/commit';
 import { SupabaseRepo } from '../services/supabaseservice';
-import { ISupabaseRepo } from '../interfaces/Isupabaseservice';
-import { inject, injectable } from 'inversify';
-import 'reflect-metadata';
 
-@injectable()
 export class GitController{
     private readonly _supabaseService: SupabaseRepo;
     private readonly _githubService: GitHubRepo;
@@ -21,18 +17,15 @@ export class GitController{
     }
 
     public getContributors = ((req: Request, res: Response) => {
-        const currentDir = __dirname;
-        const projectRoot = path.resolve(currentDir, '../..');
-        console.log(`Hello, this is your current directory: ${projectRoot}`);
-
-        this._githubService.fetchContributors('KeeanMitchell', 'GitHubClient')
+        this._githubService.fetchContributors(req.body.owner, req.body.repo)
             .then((contributors: string[]) => {
                 console.log('Contributors:', contributors);
+                res.send(contributors);
             })
             .catch((error) => {
                 console.error('Error:', error);
+                res.send(error);
             });
-        res.send();
     });
     
     public getCommitsForContributor = ((req: Request, res: Response) => {
@@ -42,24 +35,27 @@ export class GitController{
                 commits.forEach(commit => {               
                     console.log('Commits:', JSON.stringify(commit));
                 });
+                res.send(commits);
             })
             .catch((error) => {
                 console.error('Error:', error);
+                res.send(error);
             });
-        res.send();
     });
     
-    public getReposForOwner = ((req: Request, res: Response) => {
+    public getReposForOwner = (async (req: Request, res: Response) => {
         this._githubService.getRepositories(req.body.owner)
             .then((repos: string[]) => {
                 repos.forEach(repo => {               
                     console.log('repo: ', repo);
                 });
+                res.send(repos);
             })
             .catch((error) => {
                 console.error('Error:', error);
+                res.send(error);
             });
-        res.send();
+        //res.send();
     });
     
     public saveSupabase = ((req: Request, res: Response) => {  
@@ -74,7 +70,7 @@ export class GitController{
     });
     
     public updateSupabase = ((req: Request, res: Response) => {
-        this._supabaseService.updateFavouriteCommits()
+        this._supabaseService.updateFavouriteCommits(req.body.favourites, req.body.user)
             .then(() =>{
                 console.log("yay");
             })
@@ -86,13 +82,14 @@ export class GitController{
     
     public fetchSupabase = ((req: Request, res: Response) => {
         this._supabaseService.getFavouriteCommits()
-            .then(() =>{
+            .then((shas:string[]) =>{
+                res.send(shas);
                 console.log("yay");
             })
             .catch((error) => {
                 console.error('Error:', error);
+                res.send(error);
             });
-        res.send();
     });
 
 }

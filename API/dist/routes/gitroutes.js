@@ -2,16 +2,21 @@
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
+var _a, _b;
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const gitcontroller_1 = require("../controllers/gitcontroller");
 const supabaseservice_1 = require("../services/supabaseservice");
 const gitservice_1 = require("../services/gitservice");
+const dotenv_1 = __importDefault(require("dotenv"));
 const router = express_1.default.Router();
-const supabaseService = new supabaseservice_1.SupabaseRepo("https://cesujyywaqzlfptaexif.supabase.co", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNlc3VqeXl3YXF6bGZwdGFleGlmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTEzNTQ0NTcsImV4cCI6MjAyNjkzMDQ1N30.nrjom8cM-APw5moM6aUKKALqdCOEToNoNyt_7iA1hAo");
+dotenv_1.default.config();
+const key = (_a = process.env.SUPABASE_KEY) !== null && _a !== void 0 ? _a : '';
+const url = (_b = process.env.SUPABASE_URL) !== null && _b !== void 0 ? _b : '';
+const supabaseService = new supabaseservice_1.SupabaseRepo(url, key);
 const githubService = new gitservice_1.GitHubRepo();
 const gitController = new gitcontroller_1.GitController(supabaseService, githubService);
-router.get('/contributors', gitController.getContributors);
+router.post('/contributors', gitController.getContributors);
 router.post('/contributor/commits', gitController.getCommitsForContributor);
 router.post('/repos', gitController.getReposForOwner);
 router.post('/test/save/supabase', gitController.saveSupabase);
