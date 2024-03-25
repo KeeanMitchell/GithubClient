@@ -51,7 +51,7 @@ export class SupabaseRepo implements ISupabaseRepo {
         }
     }
 
-    async getFavouriteCommits(): Promise<string[]> {
+    async getFavouriteCommits(user:string): Promise<string[]> {
         // Retrieve the list of strings from the table
         const { data: fetchedData, error: fetchError } = await this.supabase
         .from(this.favouritesTable)
@@ -59,12 +59,12 @@ export class SupabaseRepo implements ISupabaseRepo {
 
         if (fetchError) {
             console.error('Error fetching data:', fetchError.message);
-        } else {
-            console.log('Data fetched successfully:', fetchedData.find(item => item.userId === 'KeeanMitchell'));
-            return fetchedData.find(item => item.userId === 'KeeanMitchell').favourites;
+        } else if(fetchedData.find(item => item.userId === user) != undefined){
+            console.log('Data fetched successfully:', fetchedData.find(item => item.userId === user));
+            return fetchedData.find(item => item.userId === user).favourites;
         // Use the fetched data
         }
-        return [];
+        return ["Nothing"];
     }
 
     //  // Function to check if the table exists

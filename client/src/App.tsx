@@ -107,8 +107,7 @@ function App() {
       body: JSON.stringify({ owner: inputValue, repo: inputOption}) // You can send additional data if required
     })
       .then(response => {
-        if (response.ok) {
-          listReadLater();
+        if (response.ok) { 
           return response.json();
         }
         throw new Error('Network response was not ok.');
@@ -127,7 +126,7 @@ function App() {
   };
 
   const listCommits = () => {
-    
+    listReadLater();
     fetch('http://localhost:3001/api/git/contributor/commits', {
       method: 'POST',
       headers: {
@@ -161,7 +160,7 @@ function App() {
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ owner: inputValue, repo: inputOption, user: inputContributor}) // You can send additional data if required
+      body: JSON.stringify({ user: inputContributor}) // You can send additional data if required
     })
       .then(response => {
         if (response.ok) {

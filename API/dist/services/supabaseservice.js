@@ -54,7 +54,7 @@ class SupabaseRepo {
             }
         });
     }
-    getFavouriteCommits() {
+    getFavouriteCommits(user) {
         return __awaiter(this, void 0, void 0, function* () {
             // Retrieve the list of strings from the table
             const { data: fetchedData, error: fetchError } = yield this.supabase
@@ -63,12 +63,12 @@ class SupabaseRepo {
             if (fetchError) {
                 console.error('Error fetching data:', fetchError.message);
             }
-            else {
-                console.log('Data fetched successfully:', fetchedData.find(item => item.userId === 'KeeanMitchell'));
-                return fetchedData.find(item => item.userId === 'KeeanMitchell').favourites;
+            else if (fetchedData.find(item => item.userId === user) != undefined) {
+                console.log('Data fetched successfully:', fetchedData.find(item => item.userId === user));
+                return fetchedData.find(item => item.userId === user).favourites;
                 // Use the fetched data
             }
-            return [];
+            return ["Nothing"];
         });
     }
 }
