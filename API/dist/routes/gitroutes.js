@@ -5,6 +5,16 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const gitcontroller_1 = require("../controllers/gitcontroller");
+const supabaseservice_1 = require("../services/supabaseservice");
+const gitservice_1 = require("../services/gitservice");
 const router = express_1.default.Router();
-router.get('/contributors', gitcontroller_1.getContributors);
+const supabaseService = new supabaseservice_1.SupabaseRepo("https://cesujyywaqzlfptaexif.supabase.co", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNlc3VqeXl3YXF6bGZwdGFleGlmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTEzNTQ0NTcsImV4cCI6MjAyNjkzMDQ1N30.nrjom8cM-APw5moM6aUKKALqdCOEToNoNyt_7iA1hAo");
+const githubService = new gitservice_1.GitHubRepo();
+const gitController = new gitcontroller_1.GitController(supabaseService, githubService);
+router.get('/contributors', gitController.getContributors);
+router.post('/contributor/commits', gitController.getCommitsForContributor);
+router.post('/repos', gitController.getReposForOwner);
+router.post('/test/save/supabase', gitController.saveSupabase);
+router.post('/test/update/supabase', gitController.updateSupabase);
+router.post('/test/fetch/supabase', gitController.fetchSupabase);
 exports.default = router;
