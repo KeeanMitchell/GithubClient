@@ -81,7 +81,7 @@ export class GitController{
     });
     
     public fetchSupabase = ((req: Request, res: Response) => {
-        this._supabaseService.getFavouriteCommits()
+        this._supabaseService.getFavouriteCommits(req.body.user)
             .then((shas:string[]) =>{
                 res.send(shas);
                 console.log("yay");
