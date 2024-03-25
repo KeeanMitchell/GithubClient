@@ -1,13 +1,11 @@
 import axios from 'axios';
 import { GitHubRepoInterface } from '../interfaces/Igitservice';
 import { Commit } from '../models/commit';
-import { injectable } from 'inversify';
-import 'reflect-metadata';
 
-@injectable()
 export class GitHubRepo implements GitHubRepoInterface {
     async fetchContributors(owner: string, repo: string): Promise<string[]> {
         try {
+            console.log(owner+ ' '+repo);
             const response = await axios.get(`https://api.github.com/repos/${owner}/${repo}/contributors`);
             // Extract contributor logins
             const contributors: string[] = response.data.map((contributor: any) => contributor.login);

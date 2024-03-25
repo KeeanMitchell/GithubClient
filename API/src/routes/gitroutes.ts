@@ -2,14 +2,20 @@ import express from 'express';
 import { GitController } from '../controllers/gitcontroller';
 import { SupabaseRepo } from '../services/supabaseservice';
 import { GitHubRepo } from '../services/gitservice';
+import dotenv from 'dotenv'; 
 
 const router = express.Router();
 
-const supabaseService = new SupabaseRepo("https://cesujyywaqzlfptaexif.supabase.co", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNlc3VqeXl3YXF6bGZwdGFleGlmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTEzNTQ0NTcsImV4cCI6MjAyNjkzMDQ1N30.nrjom8cM-APw5moM6aUKKALqdCOEToNoNyt_7iA1hAo");
+dotenv.config();
+
+const key:string = process.env.SUPABASE_KEY ?? '';
+const url:string = process.env.SUPABASE_URL ?? '';
+
+const supabaseService = new SupabaseRepo(url, key);
 const githubService = new  GitHubRepo();
 const gitController = new GitController(supabaseService, githubService);
 
-router.get('/contributors', gitController.getContributors);
+router.post('/contributors', gitController.getContributors);
 router.post('/contributor/commits', gitController.getCommitsForContributor);
 router.post('/repos', gitController.getReposForOwner);
 router.post('/test/save/supabase', gitController.saveSupabase);

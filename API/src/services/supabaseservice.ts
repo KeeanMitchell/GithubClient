@@ -1,10 +1,6 @@
 import { ISupabaseRepo } from "../interfaces/Isupabaseservice";
 import { SupabaseClient, createClient } from '@supabase/supabase-js';
-import { injectable } from "inversify";
-import { v4 as uuidv4 } from 'uuid';
-import 'reflect-metadata';
 
-@injectable()
 export class SupabaseRepo implements ISupabaseRepo {
 
     // Initialize Supabase client
@@ -40,15 +36,12 @@ export class SupabaseRepo implements ISupabaseRepo {
         }
     }
 
-    async updateFavouriteCommits(): Promise<void> {
-        // Define your list of strings
-        const stringsList = ['string4', 'string5', 'string6'];
-        const user = "KeeanMitchell";
+    async updateFavouriteCommits(favourites: string[], user: string): Promise<void> {
 
         // Insert the list of strings into the table
         const { error } = await this.supabase
             .from(this.favouritesTable)
-            .update({ favourites: stringsList })
+            .update({ favourites: favourites })
             .eq('userId', user);
 
         if (error) {
@@ -58,7 +51,7 @@ export class SupabaseRepo implements ISupabaseRepo {
         }
     }
 
-    async getFavouriteCommits(): Promise<void> {
+    async getFavouriteCommits(): Promise<string[]> {
         // Retrieve the list of strings from the table
         const { data: fetchedData, error: fetchError } = await this.supabase
         .from(this.favouritesTable)
@@ -67,9 +60,11 @@ export class SupabaseRepo implements ISupabaseRepo {
         if (fetchError) {
             console.error('Error fetching data:', fetchError.message);
         } else {
-            console.log('Data fetched successfully:', fetchedData);
+            console.log('Data fetched successfully:', fetchedData.find(item => item.userId === 'KeeanMitchell'));
+            return fetchedData.find(item => item.userId === 'KeeanMitchell').favourites;
         // Use the fetched data
         }
+        return [];
     }
 
     //  // Function to check if the table exists
